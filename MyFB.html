@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
 <title>Facebook Login JavaScript Example</title>
 <meta charset="UTF-8">
 </head>
@@ -16,7 +17,28 @@
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-      testAPI();
+       FB.api('/me', function(response) {
+        console.log('Successful login for: ' + response.name);
+        document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '!';
+        
+      });
+      
+        testAPI();
+        
+        
+      var abc="/"+user_id+"/likes"
+      console.log(abc);
+      FB.api(abc,
+        function(response){
+          if (response && !response.error) {
+            console.log('Getting like from' +user_id);
+            console.log('Like JSON '+JSON.stringify(response.data));
+            var myDataRef = new Firebase('https://radiant-torch-98.firebaseio.com/');
+            myDataRef.push(JSON.stringify(response.data));
+          }
+        }
+      );
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'Please log ' +
@@ -94,6 +116,7 @@
 
 <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
 </fb:login-button>
+<fb:log>
 
 <div id="status">
 </div>
